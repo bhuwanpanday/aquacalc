@@ -3,4 +3,4 @@ config.json
 # Byte-compiled / optimized / DLL files
 dist/
 aquacalc.egg-info/
-
+setup.py
