@@ -2,7 +2,7 @@ import math
 import numpy as np
 from scipy.optimize import brentq
 
-from all_simple import area , velocity , flow , reynolds_number 
+from aquacalc.all_simple import area , velocity , flow , reynolds_number 
 
 def swamee_jain(diameter, ruhet, reynolds_number):
     """
