@@ -4,71 +4,70 @@ from scipy.optimize import brentq
 
 from all_simple import area , velocity , flow , reynolds_number 
 
-
-def swamee_jain(flow , diameter, ruhet, viscosity=1.3 * 10**-6):
-
+def swamee_jain(diameter, ruhet, reynolds_number):
     """
     Calculates the friction factor using the Swamee-Jain equation.
 
     Parameters:
-    - flow (float): The flow rate of the fluid in the pipe (in cubic meters per second).
-    - diameter (float): The diameter of the pipe (in meters).
+    - diameter (float): The diameter of the pipe (in mm).
     - ruhet (float): The roughness height of the pipe (in mm).
-    - viscosity (float, optional): The dynamic viscosity of the fluid (in square meters per second). Default is 1.3 * 10**-6.
+    - reynolds_number (float): The Reynolds number calculated using the flow rate, diameter, and viscosity.
 
     Returns:
     - friction_factor (float): The friction factor calculated using the Swamee-Jain equation.
 
     Formula:
     The Swamee-Jain equation is given by:
-    f = 0.25 / (math.log10((ruhet / (3.7 * diameter)) + (5.74 / Re**0.9))) ** 2
-
-    where:
-    - f is the friction factor.
-    - Re is the Reynolds number calculated using the flow rate, diameter, and viscosity.
+    f = 0.25 / (math.log10((ruhet / (3.7 * diameter)) + (5.74 / reynolds_number**0.9))) ** 2
 
     Note:
     - This equation is used to estimate the friction factor in fully developed turbulent flow in pipes.
+    if the flow is laminar, the friction factor is calculated using the Poiseuille's equation.
+
     - The equation assumes that the flow is turbulent and the pipe is smooth.
     """
-    if not isinstance(flow, (int, float)):
-        raise TypeError("Flow rate (Q) must be a number (int or a float)")
+    if not isinstance(reynolds_number, (int, float)):
+        raise TypeError("Reynolds number must be a number (int or a float)")
     if not isinstance(diameter, (int, float)):
         raise TypeError("Diameter must be a number (int or a float)")
     if not isinstance(ruhet, (int, float)):
         raise TypeError("Roughness height (ruhet) must be a number (int or a float)")
-    if not isinstance(viscosity, (int, float)):
-        raise TypeError("Viscosity must be a number (int or a float)")
+ 
    
-
+    if reynolds_number < 4000: 
+        return 64 / re
+    else:
+        return 0.25 / (math.log10((ruhet / (3.7 * diameter)) + (5.74 / reynolds_number**0.9)) ** 2)
 
     
-    Re = reynolds_number(flow , diameter, viscosity)
-    
-    return 0.25 / (math.log10((ruhet / (3.7 * diameter)) + (5.74 / Re**0.9))) ** 2
+ 
     
 
-# def not_complete_darcy_weisbach(flow , length, diameter, ruhet , friction_factor_method = 'swamee_jain'):
-    
-    
+def darcy_weisbach(frictions_factor, length, diameter, velocity):
+    """
+    Calculates the Darcy-Weisbach friction factor for fluid flow in a pipe.
 
-#     v = velocity(flow, diameter)
-#     match friction_factor_method:
-#         case 'swamee_jain':
-#             f = swamee_jain(flow, diameter, ruhet)
-        
+    Parameters:
+    frictions_factor (float): The friction factor of the pipe.
+    length (float): The length of the pipe (in meters).
+    diameter (float): The diameter of the pipe (in millimeters).
+    velocity (float): The velocity of the fluid flow (in meters per second).
 
-#     return (
-#         swamee_jain(Q, diameter, ruhet)
-#         * (length / (diameter / 1000))
-#         * (v**2)
-#         / (2 * 9.81)
-#     )
+    Returns:
+    float: The Darcy-Weisbach friction factor.
+
+    Formula:
+    The Darcy-Weisbach friction factor is calculated using the following formula:
+    frictions_factor * length * velocity ** 2 / (2 * diameter / 1000 * 9.81)
+    """
+    return (
+        frictions_factor * length * velocity ** 2 / (2 * diameter / 1000 * 9.81)
+    )
 
 
 
 def colebrook_white(diameter, roughness, reynolds_number):
-    
+
     """Calculates the friction factor for pipe flow using the Colebrook-White equation.
 
     Parameters:
@@ -102,9 +101,11 @@ def colebrook_white(diameter, roughness, reynolds_number):
     
     # Function to find root
     def f_zero(f):
-        return 1.0 / math.sqrt(f) + 2.0 * math.log10(
+        return   1.0 / math.sqrt(f) + 2.0 * math.log10(
             roughness / (3.7 * diameter) + 2.51 / (reynolds_number * math.sqrt(f))
         )
+        
+        
 
     # Initial bracketing values for f
     f_l = 0.008  # A reasonable lower bound for turbulent flow
@@ -118,4 +119,35 @@ def colebrook_white(diameter, roughness, reynolds_number):
         raise ValueError("The Brent method failed to find a root: " + str(e))
 
     return f
+
+def frictions_factor(diameter, ruhet, reynolds_number, method="swamee_jain"):
+    """Calculate the friction factor for fluid flow in a pipe.
+
+    Args:
+        diameter (float): The diameter of the pipe in mm .
+        ruhet (float): The roughness height of the pipe in mm .
+        reynolds_number (float): The Reynolds number of the flow.
+        method (str, optional): The method to use for calculating the friction factor.
+            Defaults to "swamee_jain".
+            other methods are "colebrook_white"
+
+    Returns:
+        float: The friction factor.
+
+    Raises:
+        ValueError: If an invalid method is specified.
+
+    Examples:
+        >>> frictions_factor(100, 0.1, 10000)
+        0.025
+
+    """
+    match method:
+        case "swamee_jain":
+            return swamee_jain(diameter, ruhet, reynolds_number)
+        case "colebrook_white":
+            return colebrook_white(diameter, ruhet, reynolds_number)
+        case _:
+            raise ValueError("Invalid method specified.")
+        
 

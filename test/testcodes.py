@@ -1,5 +1,6 @@
 import pytest
-from aquacalc.all_formulas import area, velocity, reynolds_number, swamee_jain
+from aquacalc.all_formulas import  swamee_jain
+from aquacalc.all_simple import area, velocity, reynolds_number
 import math 
 
 def test_area():
@@ -20,14 +21,16 @@ def test_velocity():
 
 def test_reynolds_number():
     # Test with known values
-    flow = 100  # L/s
-    diameter = 200  # mm
+    flow = 110.25  # L/s
+    diameter = 350  # mm
     viscosity = 1.3 * 10**-6  # m^2/s
-    expected_result = 489707.5172058318
+    expected_result = 306160.6538867
+
+
     assert pytest.approx(reynolds_number(flow, diameter, viscosity), 0.0001) == expected_result
 
     # Test with default viscosity
-    expected_result_default_viscosity = 489707.5172058318
+    expected_result_default_viscosity = 306160.6538867
     assert pytest.approx(reynolds_number(flow, diameter), 0.0001) == expected_result_default_viscosity
 
 def test_swamee_jain():

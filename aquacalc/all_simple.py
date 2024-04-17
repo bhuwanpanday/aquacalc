@@ -66,10 +66,10 @@ def flow(velocity, diameter, liter=True):
         return velocity * area(diameter)
 
 
-# !  i shall change the flow to velocity as in the formula it is velocity * area user can calculate velocity with other formula if just flow is  known
 
 
-def reynolds_number(flow, diameter, viscosity=1.3 * 10**-6):
+
+def reynolds_number(velocity, diameter, viscosity=1.31 * 10**-6):
     """
     Calculates the Reynolds number for flow in a circular pipe.
 
@@ -81,13 +81,14 @@ def reynolds_number(flow, diameter, viscosity=1.3 * 10**-6):
     Returns:
     float: The Reynolds number.
     """
-    if not isinstance(flow, (int, float)):
-        raise TypeError("Flow rate (Q) must be a number (int or a float)")
+    if not isinstance(velocity, (int, float)):
+        raise TypeError("Velocity(v) must be a number (int or a float)")
     if not isinstance(diameter, (int, float)):
         raise TypeError("Diameter must be a number (int or a float)")
     if not isinstance(viscosity, (int, float)):
         raise TypeError("Viscosity must be a number (int or a float)")
 
-    v = velocity(flow, diameter)
+   
 
-    return (v * diameter / 1000) / viscosity
+    return (velocity * diameter / 1000) / viscosity
+
