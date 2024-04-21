@@ -2,9 +2,9 @@ import math
 import numpy as np
 from scipy.optimize import brentq
 
-from aquacalc.all_simple import area , velocity , flow , reynolds_number 
+from .all_simple import area , velocity , flow , reynolds_number
 
-def swamee_jain(diameter, ruhet, reynolds_number):
+def swamee_jain(diameter, roughness, reynolds_number):
     """
     Calculates the friction factor using the Swamee-Jain equation.
 
@@ -30,14 +30,14 @@ def swamee_jain(diameter, ruhet, reynolds_number):
         raise TypeError("Reynolds number must be a number (int or a float)")
     if not isinstance(diameter, (int, float)):
         raise TypeError("Diameter must be a number (int or a float)")
-    if not isinstance(ruhet, (int, float)):
+    if not isinstance(roughness, (int, float)):
         raise TypeError("Roughness height (ruhet) must be a number (int or a float)")
  
    
     if reynolds_number < 4000: 
-        return 64 / re
+        return 64 / reynolds_number
     else:
-        return 0.25 / (math.log10((ruhet / (3.7 * diameter)) + (5.74 / reynolds_number**0.9)) ** 2)
+        return 0.25 / (math.log10((roughness / (3.7 * diameter)) + (5.74 / reynolds_number ** 0.9)) ** 2)
 
     
  
@@ -65,7 +65,7 @@ def darcy_weisbach(frictions_factor, length, diameter, velocity):
     )
 
 
-
+# ! tested with just one value , we need to test with multiple values
 def colebrook_white(diameter, roughness, reynolds_number):
 
     """Calculates the friction factor for pipe flow using the Colebrook-White equation.
@@ -149,5 +149,6 @@ def frictions_factor(diameter, ruhet, reynolds_number, method="swamee_jain"):
             return colebrook_white(diameter, ruhet, reynolds_number)
         case _:
             raise ValueError("Invalid method specified.")
-        
+
+
 
