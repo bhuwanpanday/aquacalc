@@ -1,5 +1,4 @@
 import math
-import numpy as np
 from scipy.optimize import brentq
 
 from .all_simple import area , velocity , flow , reynolds_number
@@ -120,16 +119,42 @@ def colebrook_white(diameter, roughness, reynolds_number):
 
     return f
 
-def frictions_factor(diameter, ruhet, reynolds_number, method="swamee_jain"):
+def haaland(diameter, roughness, reynolds_number):
+    """Calculate the friction factor for fluid flow in a pipe using the Haaland equation.
+
+    Args:
+        diameter (float): The diameter of the pipe in mm.
+        roughness (float): The roughness height of the pipe in mm.
+        reynolds_number (float): The Reynolds number of the flow.
+
+    Returns:
+        float: The friction factor.
+
+    Formula:
+        The Haaland equation is given by:
+        1/sqrt(f) = (-1.8 * math.log10((roughness / (3.7 * diameter)) ** 1.11 + 6.9 / reynolds_number))
+
+    Note:
+        The Haaland equation is an approximation of the Colebrook-White equation and is commonly used in practice.
+
+    Examples:
+        >>> haaland(100, 0.1, 10000)
+        0.025
+
+    """
+    return (-1.8 * math.log10((roughness / (3.7 * diameter)) ** 1.11 + 6.9 / reynolds_number)) ** -2
+
+
+def frictions_factor(diameter, roughness, reynolds_number, method="swamee_jain"):
     """Calculate the friction factor for fluid flow in a pipe.
 
     Args:
         diameter (float): The diameter of the pipe in mm .
-        ruhet (float): The roughness height of the pipe in mm .
+        roughness (float): The roughness height of the pipe in mm .
         reynolds_number (float): The Reynolds number of the flow.
         method (str, optional): The method to use for calculating the friction factor.
             Defaults to "swamee_jain".
-            other methods are "colebrook_white"
+            other methods are "colebrook_white" and "haaland"
 
     Returns:
         float: The friction factor.
@@ -144,9 +169,11 @@ def frictions_factor(diameter, ruhet, reynolds_number, method="swamee_jain"):
     """
     match method:
         case "swamee_jain":
-            return swamee_jain(diameter, ruhet, reynolds_number)
+            return swamee_jain(diameter, roughness, reynolds_number)
         case "colebrook_white":
-            return colebrook_white(diameter, ruhet, reynolds_number)
+            return colebrook_white(diameter, roughness, reynolds_number)
+        case "haaland":
+            return haaland(diameter, roughness, reynolds_number)
         case _:
             raise ValueError("Invalid method specified.")
 

@@ -1,7 +1,7 @@
 import pytest
-from aquacalc.all_formulas import  swamee_jain, colebrook_white
+from aquacalc.all_formulas import  swamee_jain, colebrook_white , frictions_factor, haaland
 from aquacalc.all_simple import area, velocity, reynolds_number
-import math 
+import math
 
 def test_area():
     """
@@ -22,29 +22,33 @@ def test_velocity():
 def test_reynolds_number():
     # Test with known values
     flow = 110.25  # L/s
-    diameter = 350  # mm
-    viscosity = 1.3 * 10**-6  # m^2/s
-    expected_result = 306160.6538867
+    diameter = 350 # mm
+    velocity =  (flow/1000)/(math.pi*(diameter/2/1000)**2)
 
 
-    assert pytest.approx(reynolds_number(flow, diameter, viscosity), 0.0001) == expected_result
+    viscosity = 1.31 * 10**-6  # m^2/s
+    expected_result = 306160.6539
+
+
+
+    assert pytest.approx(reynolds_number(velocity, diameter,viscosity), 0.0001) == expected_result
 
     # Test with default viscosity
-    expected_result_default_viscosity = 306160.6538867
-    assert pytest.approx(reynolds_number(flow, diameter), 0.0001) == expected_result_default_viscosity
+    expected_result_default_viscosity = 306160.6539
+
+    assert pytest.approx(reynolds_number(velocity, diameter), 0.0001) == expected_result_default_viscosity
 
 def test_swamee_jain():
     # Test with known values
-    flow = 100  # L/s
-    diameter = 300  # mm
+    flow = 110.25  # L/s
+    diameter = 350  # mm
     ruhet = 0.5 # mm to m
-    viscosity = 1.3 * 10**-6  # m^2/s
-    expected_result = 0.019
-    assert pytest.approx(swamee_jain(diameter, ruhet, reynolds_number, 0.001) == expected_result)
+    reynolds_number = 306160.6539
+    expected_result = 0.02235040
 
-    # Test with default viscosity
-    expected_result_default_viscosity = 0.019
-    assert pytest.approx(swamee_jain(flow, diameter, ruhet), 0.001) == expected_result_default_viscosity
+    assert pytest.approx(swamee_jain(diameter, ruhet, reynolds_number), 0.001) == expected_result
+
+
 
 def test_colebrook_white():
     # Test with known values
@@ -53,6 +57,29 @@ def test_colebrook_white():
     reynolds_number = 306160
     expected_result = 0.023
     assert pytest.approx(colebrook_white(diameter, roughness, reynolds_number), 0.001) == expected_result
+
+def test_frictions_factor():
+    # Test with known values
+    diameter = 350
+    roughness = 0.5
+    reynolds_number = 306160.6539
+    expected_result_default = 0.02235040
+    expected_result_colebrook = 0.0222044
+    expected_result_haaland = 0.0221553
+    assert (pytest.approx(frictions_factor(diameter, roughness, reynolds_number), 0.0001)
+            == expected_result_default)
+    assert (pytest.approx(frictions_factor(diameter, roughness, reynolds_number, method= 'colebrook_white' ), 0.0001)
+            == expected_result_colebrook)
+    assert (pytest.approx(frictions_factor(diameter, roughness, reynolds_number, method= 'haaland' ), 0.0001)
+            == expected_result_haaland)
+
+def test_haaland():
+    # Test with known values
+    diameter = 350  # m
+    roughness = 0.5  # mm
+    reynolds_number = 306160
+    expected_result = 0.0221553
+    assert pytest.approx(haaland(diameter, roughness, reynolds_number), 0.0001) == expected_result
 
 
 

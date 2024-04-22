@@ -5,3 +5,4 @@ dist/
 aquacalc.egg-info/
 setup.py
 /build/
+testing.py

@@ -74,9 +74,9 @@ def reynolds_number(velocity, diameter, viscosity=1.31 * 10**-6):
     Calculates the Reynolds number for flow in a circular pipe.
 
     Parameters:
-    Q (float): The flow rate of the fluid in L/s.
+    velocity (float): The velocity of the fluid in the pipe in m/s.
     Diameter (float): The diameter of the pipe in mm.
-    viscosity (float): The viscosity of the fluid in m^2/s. Default is 1.3 * 10**-6.
+    viscosity (float): The viscosity of the fluid in m^2/s. Default is 1.31 * 10**-6.
 
     Returns:
     float: The Reynolds number.
@@ -90,5 +90,5 @@ def reynolds_number(velocity, diameter, viscosity=1.31 * 10**-6):
 
    
 
-    return (velocity * diameter / 1000) / viscosity
+    return (velocity * diameter / 1000) / (viscosity)
 
