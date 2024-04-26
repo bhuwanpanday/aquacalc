@@ -176,6 +176,130 @@ def frictions_factor(diameter, roughness, reynolds_number, method="swamee_jain")
             return haaland(diameter, roughness, reynolds_number)
         case _:
             raise ValueError("Invalid method specified.")
+        
+# ! test code not written yet
+def mass_density(temperature):
+    """
+    Calculate the mass density of water at a given temperature.
 
+    Parameters:
+    temperature (float): The temperature of water in degrees Celsius.
+
+    Returns:
+    float: The mass density of water at the given temperature.
+
+    Raises:
+    TypeError: If the temperature is not a number (int or float).
+    ValueError: If the temperature is not within the range of 0 to 100 degrees Celsius.
+
+
+    Formula:
+    The mass density of water is calculated using the following formula:
+    mass_density = 1000 - 0.019549 * (abs(temperature - 3.98)) ** 1.68
+
+    References:
+    - Heggen (1983) and  Physical Hydrology, Third Edition, page 545.
+    """
+
+    if not isinstance(temperature, (int, float)):
+        raise TypeError("Temperature must be a number (int or a float)")
+
+    if temperature < 0 or temperature > 100:
+        raise ValueError("Temperature must be within the range of 0 to 100 degrees Celsius")
+
+    return 1000 - 0.019549 * (abs(temperature - 3.98)) ** 1.68
+
+# ! test code not written yet
+def dynamic_viscosity(temperature):
+    """
+    Calculate the dynamic viscosity of water at a given temperature.
+
+    Parameters:
+    temperature (float): The temperature of water in degrees Celsius.
+
+    Returns:
+    float: The dynamic viscosity of water at the given temperature.
+
+    Raises:
+    TypeError: If the temperature is not a number (int or float).
+    ValueError: If the temperature is not within the range of 0 to 100 degrees Celsius.
+
+    Formula:
+    Formula:
+    The dynamic viscosity of water is calculated using the following formula:
+    dynamic_viscosity = 0.001 * (20987 - 92.613 * temperature) ** 0.4348
+
+    References:
+    - Heggen (1983) and  Physical Hydrology, Third Edition, page 545.
+    """
+
+    if not isinstance(temperature, (int, float)):
+        raise TypeError("Temperature must be a number (int or a float)")
+
+    if temperature < 0 or temperature > 100:
+        raise ValueError("Temperature must be within the range of 0 to 100 degrees Celsius")
+
+    return 2.0319 *10**-4 +1.5883*10^-3 *math.exp(-((temperature**0.9)/22))
+
+! # test code not written yet
+def specific_heat(temperature):
+    """
+    Calculate the specific heat of water at a given temperature.
+
+    Parameters:
+    temperature (float): The temperature of water in degrees Celsius.
+
+    Returns:
+    float: The specific heat of water at the given temperature.
+
+    Raises:
+    TypeError: If the temperature is not a number (int or float).
+    ValueError: If the temperature is not within the range of 0 to 100 degrees Celsius.
+
+    Formula:
+    The specific heat of water is calculated using the following formula:
+    specific_heat = 4.175 +1.666*[exp((34.5-temperature)/10.6)+exp(-(34.5-temperature)/10.6) ]
+
+    References:
+    - Heggen (1983) and  Physical Hydrology, Third Edition, page 545.
+    """
+
+    if not isinstance(temperature, (int, float)):
+        raise TypeError("Temperature must be a number (int or a float)")
+
+    if temperature < 0 or temperature > 100:
+        raise ValueError("Temperature must be within the range of 0 to 100 degrees Celsius")
+
+    return 4.175 +1.666*(math.exp((34.5-temperature)/10.6)+math.exp(-(34.5-temperature)/10.6))
+
+#! test code not writen yet 
+def kinematic_viscosity(temperature):
+    """
+    Calculate the kinematic viscosity of water at a given temperature.
+
+    Parameters:
+    temperature (float): The temperature of water in degrees Celsius.
+
+    Returns:
+    float: The kinematic viscosity of water at the given temperature.
+
+    Raises:
+    TypeError: If the temperature is not a number (int or float).
+    ValueError: If the temperature is not within the range of 0 to 100 degrees Celsius.
+
+    Formula:
+    The kinematic viscosity of water is calculated using the following formula:
+    kinematic_viscosity = dynamic_viscosity(temperature) / mass_density(temperature)
+
+   
+    """
+
+    if not isinstance(temperature, (int, float)):
+        raise TypeError("Temperature must be a number (int or a float)")
+
+    if temperature < 0 or temperature > 100:
+        raise ValueError("Temperature must be within the range of 0 to 100 degrees Celsius")
+
+    return dynamic_viscosity(temperature) / mass_density(temperature)
 
 

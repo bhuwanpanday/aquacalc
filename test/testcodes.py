@@ -81,6 +81,19 @@ def test_haaland():
     expected_result = 0.0221553
     assert pytest.approx(haaland(diameter, roughness, reynolds_number), 0.0001) == expected_result
 
+ #mass_density, dynamic_viscosity,specific_heat,kinematic_viscosity
+
+def test_mass_density():
+     test_values = [
+        (3.98, 1000), water
+        (0, 999.7),   # Sample value
+        (20, 998.2),   # Sample value
+        ]
+
+    # Test each pair of values
+    for temperature, expected_result in test_values:
+        assert pytest.approx(mass_density(temperature), 0.01) == expected_result
+
 
 
 
